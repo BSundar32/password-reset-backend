@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendResetEmail(email, resetToken) {
-  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+  const resetUrl = `https://reset-passwordflow.netlify.app/reset-password/${resetToken}`;
 
   const mailOptions = {
     from: "sundarb3898@gmail.com",
@@ -25,5 +25,6 @@ async function sendResetEmail(email, resetToken) {
     console.error('Error sending email:', err);
   }
 }
-
-sendResetEmail("sundarb3898@gmail.com", "testtoken123");
+module.exports = {
+ sendResetEmail
+}
