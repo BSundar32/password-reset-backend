@@ -27,7 +27,7 @@ router.post('/login',async(req,res)=>{
             message: "Login successful"
         })
     }catch(err){
-        console.log(err);
+        console.error('[LOGIN] Error:', err);
         res.status(500).json({
             message: "Internal Server Error"
         })
@@ -58,7 +58,7 @@ router.post('/addUser',validation, async(req,res)=>{
             message: "User created successfully"
         })
     } catch (error) {
-        console.error("Error creating user:", error);
+        console.error("[ADD_USER] Error creating user:", error);
         res.status(500).json({
             message: "Internal Server Error"
         })
@@ -79,18 +79,26 @@ router.post('/forgot-password',async (req,res)=>{
             })
         }
 
-        const  resetToken = Math.random().toString(36).substring(2,15) + Math.random().toString(36).substring(2,15);
+        const resetToken = Math.random().toString(36).substring(2,15) + Math.random().toString(36).substring(2,15);
         user.resetToken = resetToken;
         await user.save();
-        console.log("Generated Reset Token:", user);
-        await sendResetEmail(email,resetToken);
-
+        
+        // Send response IMMEDIATELY - don't wait for email at all
         res.status(200).json({
             message: "Password reset email sent"
         })
         
+        // Send email completely in background
+        setImmediate(async () => {
+            try {
+                await sendResetEmail(email, resetToken);
+            } catch (err) {
+                console.error(`[EMAIL] Error sending to ${email}:`, err.message);
+            }
+        });
+        
     }catch(err){
-        console.log(err);
+        console.error('[FORGOT-PASSWORD] Error:', err);
         res.status(500).json({
             message: "Internal Server Error"
         })
@@ -103,7 +111,7 @@ router.post('/reset-password',async(req,res)=>{
         const user = await User.findOne({
             resetToken
         });
-        console.log("Reset Token:", resetToken,user);
+        
         if(!user){
             return res.status(404).json({
                 message: "Invalid reset token"
@@ -111,7 +119,6 @@ router.post('/reset-password',async(req,res)=>{
         }
 
         user.password = newPassword;
-        console.log("Updated User:", user);
         await user.save();
 
         res.status(200).json({
@@ -120,7 +127,7 @@ router.post('/reset-password',async(req,res)=>{
 
     }
     catch(err){
-        console.log(err);
+        console.error('[RESET-PASSWORD] Error:', err);
         res.status(500).json({
             message: "Internal Server Error"
         })
