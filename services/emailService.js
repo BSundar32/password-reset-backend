@@ -9,8 +9,8 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD  // Must be an App Password, not your Gmail password
+        user: "sundarb3898@gmail.com",
+        pass: "ckfc avsa mtwb gits"  // Must be an App Password, not your Gmail password
     },
     pool: {
         maxConnections: 5,  // Increased for better concurrency
@@ -32,15 +32,15 @@ transporter.verify((error, success) => {
 });
 
 const sendResetEmail = async (email, resetToken) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
-        console.error('Email service not configured - EMAIL_USER or EMAIL_PASSWORD is missing');
-        return { success: false, error: 'Email service not configured' };
-    }
+    // if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+    //     console.error('Email service not configured - EMAIL_USER or EMAIL_PASSWORD is missing');
+    //     return { success: false, error: 'Email service not configured' };
+    // }
 
     const resetUrl = `${'http://localhost:3000'}/reset-password/${resetToken}`;
     
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: "sundarb3898@gmail.com",
         to: email,
         subject: 'Password Reset Request',
         html: `
@@ -53,20 +53,20 @@ const sendResetEmail = async (email, resetToken) => {
 <p><small>For security reasons, do not share this email with anyone.</small></p>
         `
     };
-
-    try {
-        console.log(`[EMAIL] Sending reset email to: ${email}`);
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`[EMAIL] ✓ Email sent successfully to ${email} - MessageId: ${info.messageId}`);
-        return { success: true, messageId: info.messageId };
-    } catch (err) {
-        console.error(`[EMAIL] ✗ Failed to send email to ${email}:`);
-        console.error(`[EMAIL] Error: ${err.message}`);
-        if (err.message.includes('Invalid login') || err.message.includes('unauthorized')) {
-            console.error('[EMAIL] CHECK: Verify your EMAIL_PASSWORD is an App Password, not your Gmail password');
-        }
-        return { success: false, error: err.message };
-    }
+    await transporter.sendMail(mailOptions);
+    // try {
+    //     console.log(`[EMAIL] Sending reset email to: ${email}`);
+    //     const info = await transporter.sendMail(mailOptions);
+    //     console.log(`[EMAIL] ✓ Email sent successfully to ${email} - MessageId: ${info.messageId}`);
+    //     return { success: true, messageId: info.messageId };
+    // } catch (err) {
+    //     console.error(`[EMAIL] ✗ Failed to send email to ${email}:`);
+    //     console.error(`[EMAIL] Error: ${err.message}`);
+    //     if (err.message.includes('Invalid login') || err.message.includes('unauthorized')) {
+    //         console.error('[EMAIL] CHECK: Verify your EMAIL_PASSWORD is an App Password, not your Gmail password');
+    //     }
+    //     return { success: false, error: err.message };
+    // }
 }
 
 module.exports = {
