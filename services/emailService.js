@@ -10,7 +10,7 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 async function sendResetEmail(email, resetToken) {
-  const resetUrl = `https://reset-passwordflow.netlify.app/username/reset-password/${resetToken}`;
+  const resetUrl = `https://reset-passwordflow.netlify.app/reset-password/${resetToken}`;
 
   const emailData = {
     sender: { name: 'Password Reset Service', email: 'sundarbala381998@gmail.com' },
