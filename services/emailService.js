@@ -16,7 +16,14 @@ async function sendResetEmail(email, resetToken) {
     sender: { name: 'Password Reset Service', email: 'sundarbala381998@gmail.com' },
     to: [{ email }],
     subject: 'Password Reset Request',
-    htmlContent: `<p>Click here to reset: <a href="${resetUrl}">${resetUrl}</a></p>`
+    htmlContent: `
+    <h2>Password Reset Request</h2>
+    <p>You requested a password reset. Click the link below to reset your password:</p>
+    <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+    <p>This link expires in 15 minutes.</p>
+    <p>If you did not request this, please ignore this email.</p>
+<hr>
+<p><small>For security reasons, do not share this email with anyone.</small></p>`
   };
 
   try {
